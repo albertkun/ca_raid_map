@@ -9,8 +9,10 @@
     <title>California ICE Raids Map - MapLibre</title>
     <meta name="description" content="California ICE Raids Map - Data source: StopICE.net">
     <link href='https://fonts.googleapis.com/css2?family=Lexend:wght@400;500;600;700&display=swap' rel='stylesheet'>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/nouislider@15.7.1/dist/nouislider.min.css">
     <script src='https://unpkg.com/maplibre-gl@4.0.0/dist/maplibre-gl.js'></script>
     <link href='https://unpkg.com/maplibre-gl@4.0.0/dist/maplibre-gl.css' rel='stylesheet' />
+    <script src="https://cdn.jsdelivr.net/npm/nouislider@15.7.1/dist/nouislider.min.js"></script>
     <style>
         body {
             margin: 0;
@@ -151,6 +153,37 @@
             align-items: center;
             margin: 12px 0;
         }
+        #time-slider {
+            margin: 12px 0;
+        }
+        .noUi-target {
+            background: #ddd;
+            border-radius: 3px;
+            border: none;
+            box-shadow: none;
+        }
+        .noUi-connects {
+            background: #dc143c;
+            border-radius: 3px;
+        }
+        .noUi-handle {
+            width: 18px;
+            height: 18px;
+            right: -9px;
+            top: -6px;
+            border-radius: 50%;
+            background: #dc143c;
+            border: 2px solid white;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.3);
+            cursor: grab;
+        }
+        .noUi-handle:active {
+            cursor: grabbing;
+        }
+        .noUi-handle::before,
+        .noUi-handle::after {
+            display: none;
+        }
         .range-slider {
             flex: 1;
             height: 6px;
@@ -219,10 +252,7 @@
                 <div class="date-value" id="to-date">Loading...</div>
             </div>
         </div>
-        <div style="margin: 12px 0; position: relative; height: 28px;">
-            <input type="range" id="from-slider" class="range-slider" style="position: absolute; width: 100%; z-index: 5;" min="0" max="100" value="0" step="1" />
-            <input type="range" id="to-slider" class="range-slider" style="position: absolute; width: 100%; z-index: 4;" min="0" max="100" value="100" step="1" />
-        </div>
+        <div id="time-slider"></div>
     </div>
     <div id="toggle-container">
         <label>
@@ -467,9 +497,17 @@
                     const minDate = timestamps[0];
                     const maxDate = timestamps[timestamps.length - 1];
                     
-                    // Get slider elements
-                    const fromSlider = document.getElementById('from-slider');
-                    const toSlider = document.getElementById('to-slider');
+                    // Initialize noUiSlider
+                    const timeSlider = document.getElementById('time-slider');
+                    noUiSlider.create(timeSlider, {
+                        start: [0, 100],
+                        connect: true,
+                        range: {
+                            'min': 0,
+                            'max': 100
+                        },
+                        step: 1
+                    });
                     
                     // Format date for display
                     function formatDate(date) {
@@ -488,9 +526,10 @@
                     
                     // Update UI with date range
                     function updateDateDisplay() {
-                        // Calculate dates based on slider positions
-                        const fromPercentage = parseFloat(fromSlider.value) / 100;
-                        const toPercentage = parseFloat(toSlider.value) / 100;
+                        // Get slider values from noUiSlider
+                        const values = timeSlider.noUiSlider.get();
+                        const fromPercentage = parseFloat(values[0]) / 100;
+                        const toPercentage = parseFloat(values[1]) / 100;
                         const timeRange = maxDate - minDate;
                         
                         const fromTime = minDate.getTime() + (timeRange * fromPercentage);
@@ -551,20 +590,8 @@
                     // Update layer data
                     map.getSource('ice-raids').setData(enrichedData);
                     
-                    // Listen to slider changes
-                    fromSlider.addEventListener('input', function() {
-                        if (parseFloat(fromSlider.value) > parseFloat(toSlider.value)) {
-                            toSlider.value = fromSlider.value;
-                        }
-                        updateDateDisplay();
-                    });
-                    
-                    toSlider.addEventListener('input', function() {
-                        if (parseFloat(toSlider.value) < parseFloat(fromSlider.value)) {
-                            fromSlider.value = toSlider.value;
-                        }
-                        updateDateDisplay();
-                    });
+                    // Listen to noUiSlider changes
+                    timeSlider.noUiSlider.on('change', updateDateDisplay);
                     
                     // Initialize display
                     updateDateDisplay();
