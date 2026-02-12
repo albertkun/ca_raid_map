@@ -208,13 +208,9 @@
                 <div class="date-value" id="to-date">Loading...</div>
             </div>
         </div>
-        <div class="slider-container">
-            <span class="slider-label">From</span>
-            <input type="range" id="from-slider" class="range-slider" min="0" max="100" value="0" step="1" />
-        </div>
-        <div class="slider-container">
-            <span class="slider-label">To</span>
-            <input type="range" id="to-slider" class="range-slider" min="0" max="100" value="100" step="1" />
+        <div style="margin: 12px 0; position: relative; height: 28px;">
+            <input type="range" id="from-slider" class="range-slider" style="position: absolute; width: 100%; z-index: 5;" min="0" max="100" value="0" step="1" />
+            <input type="range" id="to-slider" class="range-slider" style="position: absolute; width: 100%; z-index: 4;" min="0" max="100" value="100" step="1" />
         </div>
         <div class="filter-info">
             📍 <span id="incident-count">Calculating...</span> incidents
@@ -522,20 +518,6 @@
                             map.setFilter('raid-points', ['boolean', false]);
                         }
                     }
-                        
-                        // Use timestamp property to filter
-                        if (filteredFeatures.length > 0) {
-                            const maxTimestamp = Math.max(...timestamps_ms);
-                            map.setFilter('raid-heatmap', [
-                                '<=',
-                                ['to-number', ['get', 'timestamp']],
-                                maxTimestamp
-                            ]);
-                            map.setFilter('raid-points', [
-                                '<=',
-                                ['to-number', ['get', 'timestamp']],
-                                maxTimestamp
-                            ]);
                     
                     // Add timestamp to all features for filtering
                     const enrichedData = {
