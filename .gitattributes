@@ -1,0 +1,3 @@
+# Ensure GeoJSON files are treated as text
+*.geojson text eol=lf
+*.json text eol=lf

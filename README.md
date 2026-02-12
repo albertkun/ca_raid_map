@@ -1,46 +1,48 @@
 # California ICE Raids Map - MapLibre GL JS Version
 
-This is a MapLibre GL JS implementation of the California ICE raids map, originally created with Leaflet.
+Interactive heatmap visualization of ICE raid incidents across California using MapLibre GL JS.
 
-## Key Features
+🔗 **[View Live Map](https://albertkun.github.io/ca_raid_map/)** (replace with your GitHub username)
 
-- **Modern Vector-Based Rendering**: Uses MapLibre GL JS for smooth, hardware-accelerated map rendering
-- **Clustering**: Automatically clusters nearby points for better performance and visualization
-- **Responsive Design**: Full-screen map that adapts to any screen size
-- **Interactive Popups**: Click on points to see incident details
-- **OpenStreetMap Tiles**: Uses OSM raster tiles as the base layer
+## Features
 
-## Differences from Original
+- **Interactive Heatmap**: Visualizes incident density with a pink-to-red gradient
+- **Toggle View**: Switch between heatmap and individual point markers
+- **Clean Design**: Uses CARTO Light basemap for minimal visual clutter
+- **Responsive**: Full-screen map that works on all devices
+- **Fast Performance**: GPU-accelerated rendering with MapLibre GL JS
 
-The original Leaflet version (`/public/camap/`) uses:
-- Leaflet.js library
-- Leaflet MarkerCluster plugin
-- Fixed dimensions (840x659px)
+## GitHub Pages Setup
 
-This MapLibre version offers:
-- More modern, GPU-accelerated rendering
-- Built-in clustering (no plugins needed)
-- Full-screen responsive design
-- Better performance with large datasets
-- Support for vector tiles (if needed in the future)
+This repository is configured for GitHub Pages. To enable:
 
-## Usage
+1. Go to repository Settings → Pages
+2. Select "Deploy from a branch"
+3. Choose `main` branch and `/ (root)` folder
+4. Save
 
-Simply open `index.html` in a web browser. The map will:
-1. Load OpenStreetMap tiles as the base layer
-2. Display California county boundaries
-3. Show ICE raid incidents as clustered points
-4. Allow zooming and panning with smooth animations
+The map will be available at: `https://[your-username].github.io/ca_raid_map/`
 
-## Data
+## Local Development
 
-The map uses the same data files as the original:
-- `data/County_0.js` - California county boundaries
-- `data/ICERaid_1.js` - ICE raid incident locations
+Open `index.html` directly in your browser - no build step or server required!
 
-## Browser Compatibility
+## Data Files
 
-MapLibre GL JS requires a modern browser with WebGL support:
+- `data/County_0.geojson` - California county boundaries (WGS84 projection)
+- `data/ICERaid_1.geojson` - ICE raid incident locations (WGS84 projection)
+
+Data is stored as GeoJSON for GitHub Pages compatibility (no symbolic links).
+
+## Controls
+
+- **Toggle Button** (top-right): Switch between heatmap and point view
+- **Legend** (bottom-right): Shows density gradient from low (light pink) to high (dark red)
+- **Navigation**: Zoom and pan controls in top-left corner
+
+## Browser Support
+
+Requires WebGL support:
 - Chrome 50+
 - Firefox 47+
 - Safari 10+
