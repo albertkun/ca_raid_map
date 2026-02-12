@@ -48,7 +48,7 @@
             box-shadow: 0 1px 4px rgba(0,0,0,0.3);
             font-family: 'Lexend', sans-serif;
             font-size: 14px;
-            z-index: 1;
+            z-index: 10;
         }
         #toggle-container label {
             display: flex;
@@ -70,7 +70,7 @@
             box-shadow: 0 1px 4px rgba(0,0,0,0.3);
             font-family: 'Lexend', sans-serif;
             font-size: 12px;
-            z-index: 1;
+            z-index: 10;
         }
         #legend h4 {
             margin: 0 0 8px 0;
@@ -102,13 +102,19 @@
             box-shadow: 0 1px 4px rgba(0,0,0,0.3);
             font-family: 'Lexend', sans-serif;
             font-size: 14px;
-            z-index: 1;
+            z-index: 10;
             max-width: 340px;
             min-width: 300px;
         }
         #time-filter h4 {
             margin: 0 0 12px 0;
             font-size: 15px;
+            font-weight: 600;
+            color: #333;
+        }
+        #time-filter h2 {
+            margin: 0 0 12px 0;
+            font-size: 16px;
             font-weight: 600;
             color: #333;
         }
@@ -197,7 +203,7 @@
 <body>
     <div id="map"></div>
     <div id="time-filter">
-        <h4>📅 Filter by Date Range</h4>
+        <h2 id="title-text">ICE Raids Map</h2>
         <div class="time-range-container">
             <div class="date-display">
                 <div class="date-label">From</div>
@@ -469,6 +475,12 @@
                         });
                     }
                     
+                    // Update the map title with current filter info
+                    function updateMapTitle(count, fromDate, toDate) {
+                        const titleText = `${count} ICE raids from ${formatDate(fromDate)} to ${formatDate(toDate)}`;
+                        document.getElementById('title-text').textContent = titleText;
+                    }
+                    
                     // Update UI with date range
                     function updateDateDisplay() {
                         // Calculate dates based on slider positions
@@ -493,6 +505,9 @@
                         
                         // Update incident count
                         document.getElementById('incident-count').textContent = filteredFeatures.length;
+                        
+                        // Update map title with filter info
+                        updateMapTitle(filteredFeatures.length, fromDate, toDate);
                         
                         // Create filter expression for MapLibre
                         if (filteredFeatures.length > 0) {
