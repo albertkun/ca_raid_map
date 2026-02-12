@@ -411,7 +411,8 @@
                 }
 
                 let html = '<table>';
-                if (props.description) {
+                // Add description at the top if it exists and is not null
+                if (props.description && props.description !== 'null' && props.description.trim()) {
                     html += `<tr><td colspan="2"><strong>Description:</strong><br>${props.description}</td></tr>`;
                 }
                 if (props.comments) {
@@ -501,7 +502,8 @@
                 }
 
                 let html = '<table>';
-                if (props.description) {
+                // Add description at the top if it exists and is not null
+                if (props.description && props.description !== 'null' && props.description.trim()) {
                     html += `<tr><td colspan="2"><strong>Description:</strong><br>${props.description}</td></tr>`;
                 }
                 if (props.comments) {
