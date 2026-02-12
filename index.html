@@ -169,15 +169,16 @@
             height: 6px;
         }
         .noUi-handle {
-            width: 3px;
-            height: 20px;
-            right: -1.5px;
-            top: -7px;
-            border-radius: 2px;
+            width: 14px;
+            height: 14px;
+            right: -7px;
+            top: -4px;
+            border-radius: 50%;
             background: #dc143c;
-            border: none;
+            border: 2px solid white;
             box-shadow: 0 1px 3px rgba(0,0,0,0.3);
             cursor: grab;
+            opacity: 1 !important;
         }
         .noUi-handle:active {
             cursor: grabbing;
@@ -185,6 +186,9 @@
         .noUi-handle::before,
         .noUi-handle::after {
             display: none;
+        }
+        .noUi-touch .noUi-handle {
+            box-shadow: 0 1px 3px rgba(0,0,0,0.3);
         }
         .range-slider {
             flex: 1;
