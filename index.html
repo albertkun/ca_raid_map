@@ -157,38 +157,45 @@
             margin: 12px 0;
         }
         .noUi-target {
-            background: #ccc;
-            border-radius: 3px;
-            border: none;
-            box-shadow: none;
-            height: 6px;
+            background: #FAFAFA;
+            border-radius: 4px;
+            border: 1px solid #D3D3D3;
+            box-shadow: inset 0 1px 1px #F0F0F0, 0 3px 6px -5px #BBB;
+            height: 8px;
         }
         .noUi-connects {
-            background: #dc143c;
             border-radius: 3px;
-            height: 6px;
+        }
+        .noUi-connect {
+            background: #dc143c;
         }
         .noUi-handle {
-            width: 14px;
-            height: 14px;
-            right: -7px;
-            top: -4px;
-            border-radius: 50%;
-            background: #dc143c;
-            border: 2px solid white;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.3);
-            cursor: grab;
-            opacity: 1 !important;
+            width: 34px;
+            height: 28px;
+            right: -17px;
+            top: -10px;
+            border: 1px solid #D9D9D9;
+            border-radius: 3px;
+            background: #FFF;
+            cursor: default;
+            box-shadow: inset 0 0 1px #FFF, inset 0 1px 7px #EBEBEB, 0 3px 6px -3px #BBB;
         }
         .noUi-handle:active {
-            cursor: grabbing;
+            box-shadow: inset 0 0 1px #FFF, inset 0 1px 7px #DDD, 0 3px 6px -3px #BBB;
         }
         .noUi-handle::before,
         .noUi-handle::after {
-            display: none;
+            content: "";
+            display: block;
+            position: absolute;
+            height: 14px;
+            width: 1px;
+            background: #E8E7E6;
+            left: 14px;
+            top: 6px;
         }
-        .noUi-touch .noUi-handle {
-            box-shadow: 0 1px 3px rgba(0,0,0,0.3);
+        .noUi-handle::after {
+            left: 17px;
         }
         .range-slider {
             flex: 1;
@@ -241,6 +248,99 @@
             margin-top: 10px;
             border-radius: 2px;
             font-weight: 500;
+        }
+        
+        /* Mobile responsive styles */
+        @media (max-width: 768px) {
+            #time-filter {
+                max-width: calc(100vw - 20px);
+                min-width: calc(100vw - 20px);
+                width: auto;
+                bottom: 10px;
+                left: 10px;
+                right: 10px;
+            }
+            
+            #legend {
+                max-width: calc(100vw - 20px);
+                bottom: auto;
+                top: 60px;
+                right: 10px;
+                font-size: 11px;
+                padding: 10px;
+            }
+            
+            #legend h4 {
+                font-size: 12px;
+                margin: 0 0 6px 0;
+            }
+            
+            #toggle-container {
+                top: 10px;
+                right: 10px;
+                padding: 10px 12px;
+                font-size: 12px;
+            }
+            
+            .maplibregl-popup-content {
+                max-width: calc(100vw - 40px);
+            }
+            
+            #time-filter h2 {
+                font-size: 14px;
+                margin: 0 0 10px 0;
+            }
+            
+            #time-filter h4 {
+                font-size: 13px;
+            }
+            
+            .time-range-container {
+                gap: 8px;
+                margin-bottom: 10px;
+            }
+            
+            .date-display {
+                padding: 6px 8px;
+                font-size: 12px;
+            }
+            
+            .date-display .date-label {
+                font-size: 10px;
+            }
+            
+            .date-display .date-value {
+                font-size: 12px;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            #time-filter {
+                padding: 12px;
+            }
+            
+            #legend {
+                top: 50px;
+                padding: 8px;
+            }
+            
+            .legend-labels {
+                font-size: 10px;
+            }
+            
+            #time-filter h2 {
+                font-size: 13px;
+            }
+            
+            .date-display {
+                padding: 4px 6px;
+                font-size: 11px;
+            }
+            
+            .maplibregl-popup-content td {
+                padding: 2px;
+                font-size: 12px;
+            }
         }
     </style>
 </head>
