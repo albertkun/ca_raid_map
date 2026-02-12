@@ -91,10 +91,109 @@
             font-size: 11px;
             color: #666;
         }
+        #time-filter {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            background: white;
+            padding: 16px;
+            border-radius: 4px;
+            box-shadow: 0 1px 4px rgba(0,0,0,0.3);
+            font-family: Arial, sans-serif;
+            font-size: 14px;
+            z-index: 1;
+            max-width: 320px;
+            min-width: 280px;
+        }
+        #time-filter h4 {
+            margin: 0 0 12px 0;
+            font-size: 16px;
+            font-weight: bold;
+            color: #333;
+        }
+        .date-display {
+            background: #f5f5f5;
+            padding: 8px 12px;
+            border-radius: 3px;
+            margin-bottom: 12px;
+            font-size: 13px;
+            line-height: 1.5;
+        }
+        .date-display .date-label {
+            color: #666;
+            font-size: 12px;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        .date-display .date-value {
+            color: #333;
+            font-size: 14px;
+            font-weight: 500;
+            margin-top: 2px;
+        }
+        #time-slider {
+            width: 100%;
+            height: 6px;
+            border-radius: 3px;
+            background: #ddd;
+            outline: none;
+            -webkit-appearance: none;
+            appearance: none;
+            margin: 12px 0;
+            cursor: pointer;
+        }
+        #time-slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            background: #dc143c;
+            cursor: pointer;
+            border: 2px solid white;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.3);
+        }
+        #time-slider::-moz-range-thumb {
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            background: #dc143c;
+            cursor: pointer;
+            border: 2px solid white;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.3);
+        }
+        .filter-info {
+            font-size: 12px;
+            color: #666;
+            padding: 8px;
+            background: #f9f9f9;
+            border-left: 3px solid #dc143c;
+            margin-top: 12px;
+            border-radius: 2px;
+        }
+        .filter-info strong {
+            color: #333;
+        }
     </style>
 </head>
 <body>
     <div id="map"></div>
+    <div id="time-filter">
+        <h4>📅 Filter by Date</h4>
+        <div class="date-display">
+            <div class="date-label">From:</div>
+            <div class="date-value" id="from-date">Loading...</div>
+        </div>
+        <div class="date-display">
+            <div class="date-label">To:</div>
+            <div class="date-value" id="to-date">Loading...</div>
+        </div>
+        <input type="range" id="time-slider" min="0" max="100" value="100" step="1" />
+        <div class="filter-info">
+            📍 <strong id="incident-count">Calculating...</strong> incidents shown
+        </div>
+    </div>
     <div id="toggle-container">
         <label>
             <input type="checkbox" id="heatmap-toggle" checked>
@@ -317,6 +416,106 @@
                 map.setLayoutProperty('raid-heatmap', 'visibility', visibility);
                 map.setLayoutProperty('raid-points', 'visibility', pointsVisibility);
             });
+
+            // Get all ICE raid data for time filtering
+            fetch('data/ICERaid_1.geojson')
+                .then(response => response.json())
+                .then(data => {
+                    const features = data.features;
+                    
+                    // Extract and sort timestamps
+                    const timestamps = features
+                        .map(f => new Date(f.properties.timestamp))
+                        .filter(t => !isNaN(t.getTime()))
+                        .sort((a, b) => a - b);
+                    
+                    if (timestamps.length === 0) return;
+                    
+                    const minDate = timestamps[0];
+                    const maxDate = timestamps[timestamps.length - 1];
+                    
+                    // Initialize slider
+                    const slider = document.getElementById('time-slider');
+                    slider.value = 100; // Start at end (all data)
+                    
+                    // Format date for display
+                    function formatDate(date) {
+                        return date.toLocaleDateString('en-US', { 
+                            year: 'numeric', 
+                            month: 'short', 
+                            day: 'numeric' 
+                        });
+                    }
+                    
+                    // Update UI with date range
+                    function updateDateDisplay(sliderValue) {
+                        // Calculate the cutoff date based on slider position
+                        const percentageProgress = sliderValue / 100;
+                        const timeRange = maxDate - minDate;
+                        const cutoffTime = minDate.getTime() + (timeRange * percentageProgress);
+                        const cutoffDate = new Date(cutoffTime);
+                        
+                        document.getElementById('from-date').textContent = formatDate(minDate);
+                        document.getElementById('to-date').textContent = formatDate(cutoffDate);
+                        
+                        // Filter features and create filter expression
+                        const filteredFeatures = features.filter(f => {
+                            const featureDate = new Date(f.properties.timestamp);
+                            return featureDate <= cutoffDate;
+                        });
+                        
+                        // Update incident count
+                        document.getElementById('incident-count').textContent = 
+                            `<strong>${filteredFeatures.length}</strong>`;
+                        
+                        // Create filter expression for MapLibre
+                        const timestamps_ms = filteredFeatures.map(f => 
+                            new Date(f.properties.timestamp).getTime()
+                        );
+                        
+                        // Use timestamp property to filter
+                        if (filteredFeatures.length > 0) {
+                            const maxTimestamp = Math.max(...timestamps_ms);
+                            map.setFilter('raid-heatmap', [
+                                '<=',
+                                ['to-number', ['get', 'timestamp']],
+                                maxTimestamp
+                            ]);
+                            map.setFilter('raid-points', [
+                                '<=',
+                                ['to-number', ['get', 'timestamp']],
+                                maxTimestamp
+                            ]);
+                        } else {
+                            // Hide all if no data in range
+                            map.setFilter('raid-heatmap', ['boolean', false]);
+                            map.setFilter('raid-points', ['boolean', false]);
+                        }
+                    }
+                    
+                    // Add timestamp to all features for filtering
+                    const enrichedData = {
+                        ...data,
+                        features: features.map(f => ({
+                            ...f,
+                            properties: {
+                                ...f.properties,
+                                timestamp: new Date(f.properties.timestamp).getTime()
+                            }
+                        }))
+                    };
+                    
+                    // Update layer data
+                    map.getSource('ice-raids').setData(enrichedData);
+                    
+                    // Update on slider change
+                    slider.addEventListener('input', function(e) {
+                        updateDateDisplay(parseFloat(e.target.value));
+                    });
+                    
+                    // Initialize display
+                    updateDateDisplay(100);
+                });
 
             // Fit bounds to California
             const bounds = new maplibregl.LngLatBounds(
