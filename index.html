@@ -171,6 +171,8 @@
             cursor: pointer;
             border: 2px solid white;
             box-shadow: 0 1px 3px rgba(0,0,0,0.3);
+            position: relative;
+            z-index: 100;
         }
         .range-slider::-moz-range-thumb {
             width: 16px;
@@ -180,6 +182,8 @@
             cursor: pointer;
             border: 2px solid white;
             box-shadow: 0 1px 3px rgba(0,0,0,0.3);
+            position: relative;
+            z-index: 100;
         }
         .slider-label {
             font-size: 11px;
@@ -217,9 +221,6 @@
         <div style="margin: 12px 0; position: relative; height: 28px;">
             <input type="range" id="from-slider" class="range-slider" style="position: absolute; width: 100%; z-index: 5;" min="0" max="100" value="0" step="1" />
             <input type="range" id="to-slider" class="range-slider" style="position: absolute; width: 100%; z-index: 4;" min="0" max="100" value="100" step="1" />
-        </div>
-        <div class="filter-info">
-            📍 <span id="incident-count">Calculating...</span> incidents
         </div>
     </div>
     <div id="toggle-container">
@@ -477,7 +478,7 @@
                     
                     // Update the map title with current filter info
                     function updateMapTitle(count, fromDate, toDate) {
-                        const titleText = `${count} ICE raids from ${formatDate(fromDate)} to ${formatDate(toDate)}`;
+                        const titleText = `${count} ICE Raids`;
                         document.getElementById('title-text').textContent = titleText;
                     }
                     
