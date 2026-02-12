@@ -7,6 +7,7 @@
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <title>California ICE Raids Map - MapLibre</title>
+    <meta name="description" content="California ICE Raids Map - Data source: StopICE.net">
     <link href='https://fonts.googleapis.com/css2?family=Lexend:wght@400;500;600;700&display=swap' rel='stylesheet'>
     <script src='https://unpkg.com/maplibre-gl@4.0.0/dist/maplibre-gl.js'></script>
     <link href='https://unpkg.com/maplibre-gl@4.0.0/dist/maplibre-gl.css' rel='stylesheet' />
@@ -241,6 +242,9 @@
         <div class="legend-labels">
             <span>Low</span>
             <span>High</span>
+        </div>
+        <div style="margin-top: 10px; padding-top: 10px; border-top: 1px solid #ddd; font-size: 11px; color: #666;">
+            Data source: <a href="https://stopice.net" target="_blank" style="color: #dc143c; text-decoration: none;">StopICE.net</a>
         </div>
     </div>
     <script>
@@ -503,9 +507,6 @@
                             const featureDate = new Date(f.properties.timestamp);
                             return featureDate >= fromDate && featureDate <= toDate;
                         });
-                        
-                        // Update incident count
-                        document.getElementById('incident-count').textContent = filteredFeatures.length;
                         
                         // Update map title with filter info
                         updateMapTitle(filteredFeatures.length, fromDate, toDate);
