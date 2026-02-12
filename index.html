@@ -379,16 +379,47 @@
             map.on('click', 'raid-heatmap', function(e) {
                 const coordinates = e.features[0].geometry.coordinates.slice();
                 const props = e.features[0].properties;
+                
+                // Helper function to format timestamp
+                function formatTimestamp(timestamp) {
+                    const date = new Date(timestamp);
+                    return date.toLocaleDateString('en-US', { 
+                        year: 'numeric', 
+                        month: 'long', 
+                        day: 'numeric',
+                        hour: '2-digit',
+                        minute: '2-digit'
+                    });
+                }
+                
+                // Helper function to clean comments array
+                function cleanComments(comments) {
+                    if (!comments) return '';
+                    // If it's a JSON string that looks like an array, parse and clean it
+                    if (typeof comments === 'string' && (comments.startsWith('[') || comments.startsWith('{"'))) {
+                        try {
+                            const parsed = JSON.parse(comments);
+                            if (Array.isArray(parsed)) {
+                                return parsed.map(item => typeof item === 'string' ? item : JSON.stringify(item)).join('\n');
+                            }
+                            return JSON.stringify(parsed);
+                        } catch (e) {
+                            return comments;
+                        }
+                    }
+                    return comments;
+                }
 
                 let html = '<table>';
                 if (props.description) {
                     html += `<tr><td colspan="2"><strong>Description:</strong><br>${props.description}</td></tr>`;
                 }
                 if (props.comments) {
-                    html += `<tr><td colspan="2"><strong>Comments:</strong><br>${props.comments}</td></tr>`;
+                    const cleanedComments = cleanComments(props.comments);
+                    html += `<tr><td colspan="2"><strong>Comments:</strong><br>${cleanedComments}</td></tr>`;
                 }
                 if (props.timestamp) {
-                    html += `<tr><td>Timestamp:</td><td>${props.timestamp}</td></tr>`;
+                    html += `<tr><td>Date:</td><td>${formatTimestamp(props.timestamp)}</td></tr>`;
                 }
                 if (props.location_url) {
                     html += `<tr><td>Location:</td><td><a href="${props.location_url}" target="_blank">View</a></td></tr>`;
@@ -438,16 +469,47 @@
             map.on('click', 'raid-points', function(e) {
                 const coordinates = e.features[0].geometry.coordinates.slice();
                 const props = e.features[0].properties;
+                
+                // Helper function to format timestamp
+                function formatTimestamp(timestamp) {
+                    const date = new Date(timestamp);
+                    return date.toLocaleDateString('en-US', { 
+                        year: 'numeric', 
+                        month: 'long', 
+                        day: 'numeric',
+                        hour: '2-digit',
+                        minute: '2-digit'
+                    });
+                }
+                
+                // Helper function to clean comments array
+                function cleanComments(comments) {
+                    if (!comments) return '';
+                    // If it's a JSON string that looks like an array, parse and clean it
+                    if (typeof comments === 'string' && (comments.startsWith('[') || comments.startsWith('{"'))) {
+                        try {
+                            const parsed = JSON.parse(comments);
+                            if (Array.isArray(parsed)) {
+                                return parsed.map(item => typeof item === 'string' ? item : JSON.stringify(item)).join('\n');
+                            }
+                            return JSON.stringify(parsed);
+                        } catch (e) {
+                            return comments;
+                        }
+                    }
+                    return comments;
+                }
 
                 let html = '<table>';
                 if (props.description) {
                     html += `<tr><td colspan="2"><strong>Description:</strong><br>${props.description}</td></tr>`;
                 }
                 if (props.comments) {
-                    html += `<tr><td colspan="2"><strong>Comments:</strong><br>${props.comments}</td></tr>`;
+                    const cleanedComments = cleanComments(props.comments);
+                    html += `<tr><td colspan="2"><strong>Comments:</strong><br>${cleanedComments}</td></tr>`;
                 }
                 if (props.timestamp) {
-                    html += `<tr><td>Timestamp:</td><td>${props.timestamp}</td></tr>`;
+                    html += `<tr><td>Date:</td><td>${formatTimestamp(props.timestamp)}</td></tr>`;
                 }
                 if (props.location_url) {
                     html += `<tr><td>Location:</td><td><a href="${props.location_url}" target="_blank">View</a></td></tr>`;
