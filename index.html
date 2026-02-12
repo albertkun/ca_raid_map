@@ -7,6 +7,7 @@
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <title>California ICE Raids Map - MapLibre</title>
+    <link href='https://fonts.googleapis.com/css2?family=Lexend:wght@400;500;600;700&display=swap' rel='stylesheet'>
     <script src='https://unpkg.com/maplibre-gl@4.0.0/dist/maplibre-gl.js'></script>
     <link href='https://unpkg.com/maplibre-gl@4.0.0/dist/maplibre-gl.css' rel='stylesheet' />
     <style>
@@ -45,7 +46,7 @@
             padding: 12px 16px;
             border-radius: 4px;
             box-shadow: 0 1px 4px rgba(0,0,0,0.3);
-            font-family: Arial, sans-serif;
+            font-family: 'Lexend', sans-serif;
             font-size: 14px;
             z-index: 1;
         }
@@ -67,7 +68,7 @@
             padding: 12px;
             border-radius: 4px;
             box-shadow: 0 1px 4px rgba(0,0,0,0.3);
-            font-family: Arial, sans-serif;
+            font-family: 'Lexend', sans-serif;
             font-size: 12px;
             z-index: 1;
         }
@@ -93,105 +94,130 @@
         }
         #time-filter {
             position: absolute;
-            top: 10px;
+            bottom: 10px;
             left: 10px;
             background: white;
             padding: 16px;
             border-radius: 4px;
             box-shadow: 0 1px 4px rgba(0,0,0,0.3);
-            font-family: Arial, sans-serif;
+            font-family: 'Lexend', sans-serif;
             font-size: 14px;
             z-index: 1;
-            max-width: 320px;
-            min-width: 280px;
+            max-width: 340px;
+            min-width: 300px;
         }
         #time-filter h4 {
             margin: 0 0 12px 0;
-            font-size: 16px;
-            font-weight: bold;
+            font-size: 15px;
+            font-weight: 600;
             color: #333;
         }
-        .date-display {
-            background: #f5f5f5;
-            padding: 8px 12px;
-            border-radius: 3px;
+        .time-range-container {
+            display: flex;
+            gap: 12px;
             margin-bottom: 12px;
+        }
+        .date-display {
+            flex: 1;
+            background: #f5f5f5;
+            padding: 8px 10px;
+            border-radius: 3px;
             font-size: 13px;
-            line-height: 1.5;
+            line-height: 1.4;
         }
         .date-display .date-label {
             color: #666;
-            font-size: 12px;
-            font-weight: bold;
+            font-size: 11px;
+            font-weight: 600;
             text-transform: uppercase;
-            letter-spacing: 0.5px;
+            letter-spacing: 0.4px;
         }
         .date-display .date-value {
             color: #333;
-            font-size: 14px;
+            font-size: 13px;
             font-weight: 500;
             margin-top: 2px;
         }
-        #time-slider {
-            width: 100%;
+        .slider-container {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+            margin: 12px 0;
+        }
+        .range-slider {
+            flex: 1;
             height: 6px;
             border-radius: 3px;
             background: #ddd;
             outline: none;
             -webkit-appearance: none;
             appearance: none;
-            margin: 12px 0;
             cursor: pointer;
+            position: relative;
         }
-        #time-slider::-webkit-slider-thumb {
+        .range-slider::-webkit-slider-thumb {
             -webkit-appearance: none;
             appearance: none;
-            width: 18px;
-            height: 18px;
+            width: 16px;
+            height: 16px;
             border-radius: 50%;
             background: #dc143c;
             cursor: pointer;
             border: 2px solid white;
             box-shadow: 0 1px 3px rgba(0,0,0,0.3);
         }
-        #time-slider::-moz-range-thumb {
-            width: 18px;
-            height: 18px;
+        .range-slider::-moz-range-thumb {
+            width: 16px;
+            height: 16px;
             border-radius: 50%;
             background: #dc143c;
             cursor: pointer;
             border: 2px solid white;
             box-shadow: 0 1px 3px rgba(0,0,0,0.3);
+        }
+        .slider-label {
+            font-size: 11px;
+            color: #666;
+            font-weight: 600;
+            min-width: 28px;
+            text-align: center;
         }
         .filter-info {
             font-size: 12px;
-            color: #666;
-            padding: 8px;
-            background: #f9f9f9;
-            border-left: 3px solid #dc143c;
-            margin-top: 12px;
-            border-radius: 2px;
-        }
-        .filter-info strong {
             color: #333;
+            padding: 8px 10px;
+            background: #fff3cd;
+            border-left: 3px solid #dc143c;
+            margin-top: 10px;
+            border-radius: 2px;
+            font-weight: 500;
         }
     </style>
 </head>
 <body>
     <div id="map"></div>
     <div id="time-filter">
-        <h4>📅 Filter by Date</h4>
-        <div class="date-display">
-            <div class="date-label">From:</div>
-            <div class="date-value" id="from-date">Loading...</div>
+        <h4>📅 Filter by Date Range</h4>
+        <div class="time-range-container">
+            <div class="date-display">
+                <div class="date-label">From</div>
+                <div class="date-value" id="from-date">Loading...</div>
+            </div>
+            <div class="date-display">
+                <div class="date-label">To</div>
+                <div class="date-value" id="to-date">Loading...</div>
+            </div>
         </div>
-        <div class="date-display">
-            <div class="date-label">To:</div>
-            <div class="date-value" id="to-date">Loading...</div>
+        <div class="slider-container">
+            <span class="slider-label">From</span>
+            <input type="range" id="from-slider" class="range-slider" min="0" max="100" value="0" step="1" />
         </div>
-        <input type="range" id="time-slider" min="0" max="100" value="100" step="1" />
+        <div class="slider-container">
+            <span class="slider-label">To</span>
+            <input type="range" id="to-slider" class="range-slider" min="0" max="100" value="100" step="1" />
+        </div>
         <div class="filter-info">
-            📍 <strong id="incident-count">Calculating...</strong> incidents shown
+            📍 <span id="incident-count">Calculating...</span> incidents
         </div>
     </div>
     <div id="toggle-container">
@@ -434,9 +460,9 @@
                     const minDate = timestamps[0];
                     const maxDate = timestamps[timestamps.length - 1];
                     
-                    // Initialize slider
-                    const slider = document.getElementById('time-slider');
-                    slider.value = 100; // Start at end (all data)
+                    // Get slider elements
+                    const fromSlider = document.getElementById('from-slider');
+                    const toSlider = document.getElementById('to-slider');
                     
                     // Format date for display
                     function formatDate(date) {
@@ -448,30 +474,54 @@
                     }
                     
                     // Update UI with date range
-                    function updateDateDisplay(sliderValue) {
-                        // Calculate the cutoff date based on slider position
-                        const percentageProgress = sliderValue / 100;
+                    function updateDateDisplay() {
+                        // Calculate dates based on slider positions
+                        const fromPercentage = parseFloat(fromSlider.value) / 100;
+                        const toPercentage = parseFloat(toSlider.value) / 100;
                         const timeRange = maxDate - minDate;
-                        const cutoffTime = minDate.getTime() + (timeRange * percentageProgress);
-                        const cutoffDate = new Date(cutoffTime);
                         
-                        document.getElementById('from-date').textContent = formatDate(minDate);
-                        document.getElementById('to-date').textContent = formatDate(cutoffDate);
+                        const fromTime = minDate.getTime() + (timeRange * fromPercentage);
+                        const toTime = minDate.getTime() + (timeRange * toPercentage);
                         
-                        // Filter features and create filter expression
+                        const fromDate = new Date(fromTime);
+                        const toDate = new Date(toTime);
+                        
+                        document.getElementById('from-date').textContent = formatDate(fromDate);
+                        document.getElementById('to-date').textContent = formatDate(toDate);
+                        
+                        // Filter features between from and to dates
                         const filteredFeatures = features.filter(f => {
                             const featureDate = new Date(f.properties.timestamp);
-                            return featureDate <= cutoffDate;
+                            return featureDate >= fromDate && featureDate <= toDate;
                         });
                         
                         // Update incident count
-                        document.getElementById('incident-count').textContent = 
-                            `<strong>${filteredFeatures.length}</strong>`;
+                        document.getElementById('incident-count').textContent = filteredFeatures.length;
                         
                         // Create filter expression for MapLibre
-                        const timestamps_ms = filteredFeatures.map(f => 
-                            new Date(f.properties.timestamp).getTime()
-                        );
+                        if (filteredFeatures.length > 0) {
+                            const timestamps_ms = filteredFeatures.map(f => 
+                                new Date(f.properties.timestamp).getTime()
+                            );
+                            const minTimestamp = Math.min(...timestamps_ms);
+                            const maxTimestamp = Math.max(...timestamps_ms);
+                            
+                            map.setFilter('raid-heatmap', [
+                                'all',
+                                ['>=', ['to-number', ['get', 'timestamp']], minTimestamp],
+                                ['<=', ['to-number', ['get', 'timestamp']], maxTimestamp]
+                            ]);
+                            map.setFilter('raid-points', [
+                                'all',
+                                ['>=', ['to-number', ['get', 'timestamp']], minTimestamp],
+                                ['<=', ['to-number', ['get', 'timestamp']], maxTimestamp]
+                            ]);
+                        } else {
+                            // Hide all if no data in range
+                            map.setFilter('raid-heatmap', ['boolean', false]);
+                            map.setFilter('raid-points', ['boolean', false]);
+                        }
+                    }
                         
                         // Use timestamp property to filter
                         if (filteredFeatures.length > 0) {
@@ -486,12 +536,6 @@
                                 ['to-number', ['get', 'timestamp']],
                                 maxTimestamp
                             ]);
-                        } else {
-                            // Hide all if no data in range
-                            map.setFilter('raid-heatmap', ['boolean', false]);
-                            map.setFilter('raid-points', ['boolean', false]);
-                        }
-                    }
                     
                     // Add timestamp to all features for filtering
                     const enrichedData = {
@@ -508,13 +552,23 @@
                     // Update layer data
                     map.getSource('ice-raids').setData(enrichedData);
                     
-                    // Update on slider change
-                    slider.addEventListener('input', function(e) {
-                        updateDateDisplay(parseFloat(e.target.value));
+                    // Listen to slider changes
+                    fromSlider.addEventListener('input', function() {
+                        if (parseFloat(fromSlider.value) > parseFloat(toSlider.value)) {
+                            toSlider.value = fromSlider.value;
+                        }
+                        updateDateDisplay();
+                    });
+                    
+                    toSlider.addEventListener('input', function() {
+                        if (parseFloat(toSlider.value) < parseFloat(fromSlider.value)) {
+                            fromSlider.value = toSlider.value;
+                        }
+                        updateDateDisplay();
                     });
                     
                     // Initialize display
-                    updateDateDisplay(100);
+                    updateDateDisplay();
                 });
 
             // Fit bounds to California
