@@ -2,7 +2,7 @@
 
 Interactive heatmap visualization of ICE raid incidents across California using MapLibre GL JS.
 
-🔗 **[View Live Map](https://albertkun.github.io/ca_raid_map/)** (replace with your GitHub username)
+🔗 **[View Live Map](https://albertkun.github.io/ca_raid_map/)**
 
 ## Features
 
